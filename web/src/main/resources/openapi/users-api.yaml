@@ -1,0 +1,143 @@
+openapi: 3.0.3
+info:
+  title: Users Microservice
+  version: 1.0.3
+paths:
+  /users:
+    get:
+      description: Return list of users based on given paramters
+      operationId: findUsers
+      parameters:
+        - in: query
+          name: username
+          required: false
+          schema:
+            type: string
+            maxLength: 40
+          example: username
+        - in: query
+          name: email
+          required: false
+          schema:
+            type: string
+            format: email
+      responses:
+        200:
+          description: A list of users is populated
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
+    post:
+      description: Save a new user into database
+      operationId: saveUser
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateUserRequest'
+      responses:
+        200:
+          description: User save sucessfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateUserResponse'
+  /users/{userId}:
+    get:
+      description: Return the User based on given userId
+      operationId: findUserByUserId
+      parameters:
+        - in: path
+          name: userId
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        200:
+          description: A user found by userId
+  /users/{email}/email:
+    get:
+      description: Return user for given email
+      operationId: findUserByEmail
+      parameters:
+        - in: path
+          name: email
+          required: true
+          schema:
+            type: string
+            format: email
+      responses:
+        200:
+          description: User found by given email
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserInfo'
+
+components:
+  schemas:
+    User:
+      type: object
+      properties:
+        userId:
+          type: string
+          format: uuid
+        username:
+          type: string
+        email:
+          type: string
+          format: email
+
+    UserInfo:
+      type: object
+      properties:
+        userId:
+          type: string
+          format: uuid
+        username:
+          type: string
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+
+    CreateUserRequest:
+      type: object
+      required:
+        - email
+        - password
+        - confirmPassword
+      properties:
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+        confirmPassword:
+          type: string
+
+    CreateUserResponse:
+      type: object
+      required:
+        - userId
+        - email
+      properties:
+        userId:
+          type: string
+          format: uuid
+        email:
+          type: string
+          format: email
+
+    Credential:
+      type: object
+      properties:
+        username:
+          type: string
+        password:
+          type: string
