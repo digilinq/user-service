@@ -1,0 +1,9 @@
+name: Build Test and Publish Docker Image
+run-name: ${{ github.actor }} is learning GitHub Actions
+on: [push]
+jobs:
+  test:
+    run-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - run: ls
