@@ -1,7 +1,6 @@
 FROM maven:3.6.0-jdk-11 AS build
 WORKDIR /build
 COPY pom.xml pom.xml
-COPY logger logger
 COPY api api
 COPY web web
 COPY repository repository
