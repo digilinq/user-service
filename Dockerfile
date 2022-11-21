@@ -6,7 +6,7 @@ COPY api api
 COPY web web
 COPY repository repository
 COPY service service
-RUN mvn clean package
+RUN mvn clean package -DskipTests
 
 FROM openjdk:11
 WORKDIR /work
