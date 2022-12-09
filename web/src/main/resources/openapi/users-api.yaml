@@ -1,11 +1,11 @@
 openapi: 3.0.3
 info:
-  title: Users Microservice
-  version: 1.0.3
+  title: User microservice
+  version: 1.0.4
 paths:
   /users:
     get:
-      description: Return list of users based on given paramters
+      description: Return list of users based on given parameters
       operationId: findUsers
       parameters:
         - in: query
@@ -59,9 +59,9 @@ paths:
       responses:
         200:
           description: A user found by userId
-  /users/{email}/email:
+  /users/email:{email}:
     get:
-      description: Return user for given email
+      description: Return user by given email
       operationId: findUserByEmail
       parameters:
         - in: path
@@ -77,7 +77,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/UserInfo'
-
+        404:
+          description: User not found
 components:
   schemas:
     User:
