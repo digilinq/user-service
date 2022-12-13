@@ -5,7 +5,6 @@ import com.digiboy.platform.user.generated.v1.model.CreateUserRequest;
 import com.digiboy.platform.user.web.config.mapper.MapperConfiguration;
 import com.digiboy.platform.user.web.mapper.CreateUserMapperImpl;
 import com.digiboy.platform.user.web.mapper.EncryptedPasswordMapper;
-import com.digiboy.platform.user.web.mapper.UserInfoMapperImpl;
 import com.digiboy.platform.user.web.mapper.UserModelMapperImpl;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -35,7 +34,6 @@ import java.util.Set;
 @Import({
         UserModelMapperImpl.class,
         CreateUserMapperImpl.class,
-        UserInfoMapperImpl.class,
         MapperConfiguration.class,
         EncryptedPasswordMapper.class
 })

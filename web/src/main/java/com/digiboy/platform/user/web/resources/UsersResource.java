@@ -5,13 +5,11 @@ import com.digiboy.platform.user.dto.UserDTO;
 import com.digiboy.platform.user.generated.v1.api.UsersApi;
 import com.digiboy.platform.user.generated.v1.model.CreateUserRequest;
 import com.digiboy.platform.user.generated.v1.model.CreateUserResponse;
+import com.digiboy.platform.user.generated.v1.model.Credential;
 import com.digiboy.platform.user.generated.v1.model.User;
-import com.digiboy.platform.user.generated.v1.model.UserInfo;
 import com.digiboy.platform.user.web.mapper.CreateUserMapper;
-import com.digiboy.platform.user.web.mapper.UserInfoMapper;
 import com.digiboy.platform.user.web.mapper.UserModelMapper;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -34,9 +32,6 @@ public class UsersResource implements UsersApi {
     private UserModelMapper userModelMapper;
 
     @Autowired
-    private UserInfoMapper userInfoMapper;
-
-    @Autowired
     private CreateUserMapper createUserMapper;
 
     public UsersResource(Logger logger, UserService service, PasswordEncoder passwordEncoder) {
@@ -46,20 +41,19 @@ public class UsersResource implements UsersApi {
     }
 
     @Override
+    public ResponseEntity<User> findUser(String userId) {
+        return UsersApi.super.findUser(userId);
+    }
+
+    @Override
+    public ResponseEntity<List<Credential>> getUserCredentioals(UUID userId) {
+        return UsersApi.super.getUserCredentioals(userId);
+    }
+
+    @Override
     public ResponseEntity<List<User>> findUsers(String username, String email) {
         return ResponseEntity.ok(userModelMapper.map(
                 service.findAll()));
-    }
-
-    @Override
-    public ResponseEntity<UserInfo> findUserByEmail(String email) {
-        return ResponseEntity.ok(userInfoMapper.map(
-                service.findByEmail(email)));
-    }
-
-    @Override
-    public ResponseEntity<Void> findUserByUserId(UUID userId) {
-        return UsersApi.super.findUserByUserId(userId);
     }
 
     @Override
