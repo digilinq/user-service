@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
   title: User microservice
-  version: 1.0.4
+  version: 1.0.5
 paths:
   /users:
     get:
@@ -39,16 +39,38 @@ paths:
             schema:
               $ref: '#/components/schemas/CreateUserRequest'
       responses:
-        200:
-          description: User save sucessfully
+        201:
+          description: User created successfully
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/CreateUserResponse'
   /users/{userId}:
     get:
-      description: Return the User based on given userId
-      operationId: findUserByUserId
+      description: Return the User based on given userId, username or email
+      operationId: findUser
+      parameters:
+        - in: path
+          name: userId
+          required: true
+          schema:
+            type: string
+            example: 88acdc9a-78c8-11ed-a1eb-0242ac120002
+      responses:
+        200:
+          description: User found by given userId, username or email
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        400:
+          description: Invalid email or userId
+        404:
+          description: User not found
+  /users/{userId}/credentials:
+    get:
+      description: Return credentioals by given userId
+      operationId: getUserCredentioals
       parameters:
         - in: path
           name: userId
@@ -58,27 +80,19 @@ paths:
             format: uuid
       responses:
         200:
-          description: A user found by userId
-  /users/email:{email}:
-    get:
-      description: Return user by given email
-      operationId: findUserByEmail
-      parameters:
-        - in: path
-          name: email
-          required: true
-          schema:
-            type: string
-            format: email
-      responses:
-        200:
-          description: User found by given email
+          description: User credentials populated for given userId. Empty list if there is no credential
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/UserInfo'
+                type: array
+                items:
+                  $ref: '#/components/schemas/Credential'
+        403:
+          description: Forbiden
         404:
           description: User not found
+        422:
+          description: User is disabled or not activated
 components:
   schemas:
     User:
@@ -92,21 +106,6 @@ components:
         email:
           type: string
           format: email
-
-    UserInfo:
-      type: object
-      properties:
-        userId:
-          type: string
-          format: uuid
-        username:
-          type: string
-        email:
-          type: string
-          format: email
-        password:
-          type: string
-
     CreateUserRequest:
       type: object
       required:
@@ -121,7 +120,6 @@ components:
           type: string
         confirmPassword:
           type: string
-
     CreateUserResponse:
       type: object
       required:
@@ -134,7 +132,6 @@ components:
         email:
           type: string
           format: email
-
     Credential:
       type: object
       properties:

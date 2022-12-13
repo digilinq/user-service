@@ -38,7 +38,7 @@ class UsersResourceIntegrationTest {
     @Test
     void shouldRejectWithBadRequest_whenRequestWithMalformedEmail() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders
-                        .get("/api/v1/users/email:{email}", "incorrect-email"))
+                        .get("/api/v1/users/{email}", "incorrect-email"))
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().isBadRequest());
     }
@@ -49,7 +49,7 @@ class UsersResourceIntegrationTest {
         final String email = "info@example.com";
 
         mockMvc.perform(MockMvcRequestBuilders
-                        .get("/api/v1/users/email:{email}", email))
+                        .get("/api/v1/users/{email}", email))
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().isNotFound());
     }
@@ -61,7 +61,7 @@ class UsersResourceIntegrationTest {
         final String email = "info@example.com";
 
         MockHttpServletResponse response = mockMvc.perform(MockMvcRequestBuilders
-                        .get("/api/v1/users/email:{email}", email))
+                        .get("/api/v1/users/{email}", email))
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.content().string(Matchers.containsString("04017bf8-cadc-11ec-a70f-acde48001122")))
