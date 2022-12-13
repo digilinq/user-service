@@ -17,3 +17,6 @@ mvn spring-boot:run -Dspring-boot.run.profiles=local
 Test the class UsersResourceIntegrationTest
 
 `mvn test -Dtest=UsersResourceIntegrationTest -DfailIfNoTests=false`
+
+
+Add sonarcube to project 
