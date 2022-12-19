@@ -1,0 +1,17 @@
+version: '3.8'
+
+services:
+  user-service:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: digilinq/platform/user-service
+    container_name: user-service
+    networks:
+      - digilinq-network
+    environment:
+      SPRING_PROFILES_ACTIVE: ${SPRING_PROFILES_ACTIVE}
+networks:
+  digilinq-network:
+    name: digilinq
+    external: true
