@@ -1,3 +1,15 @@
+spring:
+  application:
+    name: user-service
+  cloud:
+    bus:
+      ack:
+        enabled: true
+  rabbitmq:
+    host: ${RABBITMQ_HOST:rabbitmq}
+    port: ${RABBITMQ_PORT:5672}
+    username: ${RABBITMQ_USERNAME:guest}
+    password: ${RABBITMQ_PASSWORD:guest}
 management:
   endpoints:
     web:
@@ -98,7 +110,6 @@ eureka:
       defaultZone: http://eureka-discovery-service:8761/eureka/
   instance:
     instance-id: ${spring.application.name}:${spring.application.instance_id:${random.value}}
-
 --- # prod
 spring:
   config:
