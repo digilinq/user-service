@@ -3,7 +3,8 @@ spring:
     name: user-service
   cloud:
     bus:
-      ack:
+      enabled: true
+      refresh:
         enabled: true
   rabbitmq:
     host: ${RABBITMQ_HOST:rabbitmq}
