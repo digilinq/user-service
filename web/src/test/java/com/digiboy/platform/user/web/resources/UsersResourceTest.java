@@ -7,6 +7,7 @@ import com.digiboy.platform.user.web.mapper.CreateUserMapperImpl;
 import com.digiboy.platform.user.web.mapper.EncryptedPasswordMapper;
 import com.digiboy.platform.user.web.mapper.UserModelMapperImpl;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.slf4j.Logger;
@@ -21,14 +22,16 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultMatcher;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.Validator;
 import java.io.InputStream;
 import java.util.Set;
+
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest
 @Import({
@@ -38,6 +41,10 @@ import java.util.Set;
         EncryptedPasswordMapper.class
 })
 class UsersResourceTest {
+
+    private static final String BASE_URL = "/api/v1";
+    private static final String ENDPOINT_USERS = BASE_URL + "/users";
+
 
     @Autowired
     private MockMvc mockMvc;
@@ -64,14 +71,23 @@ class UsersResourceTest {
     void itShouldWork(String resourceName) throws Exception {
         try (InputStream in = this.getClass().getClassLoader().getResourceAsStream(resourceName)) {
             CreateUserRequest request = mapper.readValue(in, CreateUserRequest.class);
-            mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/users")
+            mockMvc.perform(post("/api/v1/users")
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(mapper.writeValueAsBytes(request)))
-                    .andDo(MockMvcResultHandlers.print())
+                    .andDo(print())
                     .andExpect(ResultMatcher.matchAll(
-                            MockMvcResultMatchers.status().isCreated()
+                            status().isCreated()
                     ));
         }
+    }
+
+    @Test
+    void should_return_not_acceptable_when_request_with_accept_xml() throws Exception {
+        mockMvc.perform(
+                get(ENDPOINT_USERS).accept(MediaType.APPLICATION_XML)
+        ).andDo(print()).andExpect(
+                status().isNotAcceptable()
+        );
     }
 
     @Autowired
@@ -101,12 +117,12 @@ class UsersResourceTest {
     void itWillReject(String resourceName) throws Exception {
         try (InputStream in = this.getClass().getClassLoader().getResourceAsStream(resourceName)) {
             CreateUserRequest request = mapper.readValue(in, CreateUserRequest.class);
-            mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/users")
+            mockMvc.perform(post("/api/v1/users")
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(mapper.writeValueAsBytes(request)))
-                    .andDo(MockMvcResultHandlers.print())
+                    .andDo(print())
                     .andExpect(ResultMatcher.matchAll(
-                            MockMvcResultMatchers.status().isBadRequest()));
+                            status().isBadRequest()));
         }
     }
 }
